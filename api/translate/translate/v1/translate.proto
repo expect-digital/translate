@@ -1,0 +1,6 @@
+syntax = "proto3";
+package translate.v1;
+
+service ReceiptService {
+}
+
