@@ -1,5 +1,16 @@
 syntax = "proto3";
 package translate.v1;
+option go_package = "./gen";
 
-service TranslateService {
+service TranslateService {}
+
+message Message {
+  string id = 1;
+  string message = 2;
+  bool fuzzy = 3;
+}
+
+message Messages {
+  string language = 1;
+  repeated Message messages = 2;
 }
