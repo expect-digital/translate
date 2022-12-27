@@ -1,5 +1,7 @@
 package model
 
+import "golang.org/x/text/language"
+
 type Message struct {
 	ID      string
 	Message string
@@ -7,7 +9,7 @@ type Message struct {
 }
 
 type Messages struct {
-	Language string
-	Messages []Message
 	Labels   map[string]string
+	Language language.Tag
+	Messages []Message
 }
