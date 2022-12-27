@@ -1,8 +1,8 @@
 package transform
 
 import (
-	pb "github.com/expect-digital/translate/api/translate/translate/v1/gen"
 	"github.com/expect-digital/translate/pkg/model"
+	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
 )
 
 func MessageFromProto(m *pb.Message) model.Message {
@@ -14,10 +14,10 @@ func MessageFromProto(m *pb.Message) model.Message {
 }
 
 func MessagesFromProto(m *pb.Messages) model.Messages {
-	var messagesToAdd []model.Message
+	messagesToAdd := make([]model.Message, 0, len(m.Messages))
 
-	for i := range m.Messages {
-		messagesToAdd = append(messagesToAdd, MessageFromProto(m.Messages[i]))
+	for _, msg := range m.Messages {
+		messagesToAdd = append(messagesToAdd, MessageFromProto(msg))
 	}
 
 	return model.Messages{
@@ -27,10 +27,10 @@ func MessagesFromProto(m *pb.Messages) model.Messages {
 }
 
 func MessagesToProtobuf(m model.Messages) *pb.Messages {
-	var messagesToAdd []*pb.Message
+	messagesToAdd := make([]*pb.Message, 0, len(m.Messages))
 
-	for i := range m.Messages {
-		messagesToAdd = append(messagesToAdd, MessageToProtobuf(m.Messages[i]))
+	for _, msg := range m.Messages {
+		messagesToAdd = append(messagesToAdd, MessageToProtobuf(msg))
 	}
 
 	return &pb.Messages{
