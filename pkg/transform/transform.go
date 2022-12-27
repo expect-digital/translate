@@ -16,18 +16,25 @@ func MessageFromProto(m *pb.Message) model.Message {
 	}
 }
 
-func MessagesFromProto(m *pb.Messages) model.Messages {
+func MessagesFromProto(m *pb.Messages) (model.Messages, error) {
 	messagesToAdd := make([]model.Message, 0, len(m.Messages))
 
 	for _, msg := range m.Messages {
 		messagesToAdd = append(messagesToAdd, MessageFromProto(msg))
 	}
 
-	return model.Messages{
+	tag, err := language.Parse(m.Language)
+	if err != nil {
+		return model.Messages{}, fmt.Errorf("language code (BCP 47) is invalid: %w", err)
+	}
+
+	messageModel := model.Messages{
 		Labels:   m.Labels,
-		Language: convertToLanguageTag(m.Language),
+		Language: tag,
 		Messages: messagesToAdd,
 	}
+
+	return messageModel, nil
 }
 
 func MessagesToProtobuf(m model.Messages) *pb.Messages {
@@ -50,13 +57,4 @@ func MessageToProtobuf(m model.Message) *pb.Message {
 		Message: m.Message,
 		Fuzzy:   m.Fuzzy,
 	}
-}
-
-func convertToLanguageTag(text string) language.Tag {
-	tag, err := language.Parse(text)
-	if err != nil {
-		fmt.Println(fmt.Errorf("error while parsing: %w", err))
-	}
-
-	return tag
 }
