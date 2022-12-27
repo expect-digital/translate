@@ -10,7 +10,7 @@ proto:
   RUN --mount=type=cache,target=$BUF_CACHE_DIR buf mod update
   RUN --mount=type=cache,target=$BUF_CACHE_DIR buf build
   RUN --mount=type=cache,target=$BUF_CACHE_DIR buf generate
-  SAVE ARTIFACT gen/proto/go/translate/v1 AS LOCAL pkg/server/translate/v1
+  SAVE ARTIFACT gen/proto/go/translate/v1 translate/v1 AS LOCAL pkg/server/translate/v1
 
 deps:
   FROM golang:$go_version-alpine
@@ -24,6 +24,7 @@ deps:
 
 lint-go:
   FROM +deps
+  COPY --dir +proto/translate/v1 pkg/server/translate/v1
   COPY --dir pkg .
   COPY .golangci.yml .
   RUN golangci-lint run
