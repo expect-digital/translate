@@ -9,4 +9,5 @@ type Message struct {
 type Messages struct {
 	Language string
 	Messages []Message
+	Labels   map[string]string
 }
