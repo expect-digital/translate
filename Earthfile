@@ -24,8 +24,8 @@ deps:
 
 lint-go:
   FROM +deps
-  COPY --dir +proto/translate/v1 pkg/server/translate/v1
   COPY --dir pkg .
+  COPY --dir +proto/translate/v1 pkg/server/translate/v1
   COPY .golangci.yml .
   RUN golangci-lint run
 
