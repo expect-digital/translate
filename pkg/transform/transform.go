@@ -53,8 +53,10 @@ func MessageToProtobuf(m model.Message) *pb.Message {
 
 func convertToLanguageTag(text string) language.Tag {
 	tag, err := language.Parse(text)
+
 	if err != nil {
 		fmt.Println(fmt.Errorf("error while parsing: %w", err))
 	}
+
 	return tag
 }
