@@ -2,6 +2,7 @@ package transform
 
 import (
 	"fmt"
+
 	"github.com/expect-digital/translate/pkg/model"
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
 	"golang.org/x/text/language"
@@ -23,9 +24,9 @@ func MessagesFromProto(m *pb.Messages) model.Messages {
 	}
 
 	return model.Messages{
+		Labels:   m.Labels,
 		Language: convertToLanguageTag(m.Language),
 		Messages: messagesToAdd,
-		Labels:   m.Labels,
 	}
 }
 
@@ -37,9 +38,9 @@ func MessagesToProtobuf(m model.Messages) *pb.Messages {
 	}
 
 	return &pb.Messages{
+		Labels:   m.Labels,
 		Language: m.Language.String(),
 		Messages: messagesToAdd,
-		Labels:   m.Labels,
 	}
 }
 
@@ -53,7 +54,6 @@ func MessageToProtobuf(m model.Message) *pb.Message {
 
 func convertToLanguageTag(text string) language.Tag {
 	tag, err := language.Parse(text)
-
 	if err != nil {
 		fmt.Println(fmt.Errorf("error while parsing: %w", err))
 	}

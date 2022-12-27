@@ -9,7 +9,7 @@ type Message struct {
 }
 
 type Messages struct {
+	Labels   map[string]string
 	Language language.Tag
 	Messages []Message
-	Labels   map[string]string
 }
