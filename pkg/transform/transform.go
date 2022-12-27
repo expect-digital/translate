@@ -23,6 +23,7 @@ func MessagesFromProto(m *pb.Messages) model.Messages {
 	return model.Messages{
 		Language: m.Language,
 		Messages: messagesToAdd,
+		Labels:   m.Labels,
 	}
 }
 
@@ -36,6 +37,7 @@ func MessagesToProtobuf(m model.Messages) *pb.Messages {
 	return &pb.Messages{
 		Language: m.Language,
 		Messages: messagesToAdd,
+		Labels:   m.Labels,
 	}
 }
 
