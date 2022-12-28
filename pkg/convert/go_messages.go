@@ -16,19 +16,19 @@ func EncodeToBytes(m model.Messages) ([]byte, error) {
 
 	msg, err := json.Marshal(message)
 	if err != nil {
-		fmt.Println(fmt.Errorf("error while marshaling: %w", err))
+		return []byte{}, fmt.Errorf("error while marshaling: %w", err)
 	}
 
 	return msg, nil
 }
 
-func DecodeToMessages(b []byte) model.Messages {
+func DecodeToMessages(b []byte) (model.Messages, error) {
 	var msg model.Messages
 
 	err := json.Unmarshal(b, &msg)
 	if err != nil {
-		fmt.Println(fmt.Errorf("error while unmarshaling: %w", err))
+		return model.Messages{}, fmt.Errorf("error while unmarshaling: %w", err)
 	}
 
-	return msg
+	return msg, nil
 }
