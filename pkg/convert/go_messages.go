@@ -20,12 +20,14 @@ func FromGoMessages(m model.Messages) ([]byte, error) {
 }
 
 func ToGoMessages(b []byte) (model.Messages, error) {
-	var msg model.Messages
+	var pipelineMsg pipeline.Messages
 
-	err := json.Unmarshal(b, &msg)
+	err := json.Unmarshal(b, &pipelineMsg)
 	if err != nil {
 		return model.Messages{}, fmt.Errorf("error while unmarshaling: %w", err)
 	}
+
+	msg := messagesFromPipeline(pipelineMsg)
 
 	return msg, nil
 }
@@ -38,11 +40,28 @@ func messagesToPipeline(m model.Messages) pipeline.Messages {
 
 	for _, value := range m.Messages {
 		pipelineMsg.Messages = append(pipelineMsg.Messages, pipeline.Message{
-			ID:      append(pipeline.IDList{}, value.ID),
+			ID:      pipeline.IDList{value.ID},
 			Fuzzy:   value.Fuzzy,
 			Message: pipeline.Text{Msg: value.Message},
 		})
 	}
 
 	return pipelineMsg
+}
+
+func messagesFromPipeline(m pipeline.Messages) model.Messages {
+	msg := model.Messages{
+		Language: m.Language,
+		Messages: make([]model.Message, 0, len(m.Messages)),
+	}
+
+	for i, value := range m.Messages {
+		msg.Messages = append(msg.Messages, model.Message{
+			ID:      value.ID[i],
+			Fuzzy:   value.Fuzzy,
+			Message: value.Message.Msg,
+		})
+	}
+
+	return msg
 }
