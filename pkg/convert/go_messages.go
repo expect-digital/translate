@@ -13,7 +13,7 @@ func FromGoMessages(m model.Messages) ([]byte, error) {
 
 	msg, err := json.Marshal(pipelineMsg)
 	if err != nil {
-		return nil, fmt.Errorf("failed pipeline.Messages marshaling: %w", err)
+		return nil, fmt.Errorf("encode pipeline.Messages to JSON: %w", err)
 	}
 
 	return msg, nil
@@ -24,7 +24,7 @@ func ToGoMessages(b []byte) (model.Messages, error) {
 
 	err := json.Unmarshal(b, &pipelineMsg)
 	if err != nil {
-		return model.Messages{}, fmt.Errorf("failed pipeline.Messages unmarshaling: %w", err)
+		return model.Messages{}, fmt.Errorf("decode JSON to pipeline.Messages: %w", err)
 	}
 
 	msg := messagesFromPipeline(pipelineMsg)
