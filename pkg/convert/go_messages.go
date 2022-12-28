@@ -8,13 +8,7 @@ import (
 )
 
 func EncodeToBytes(m model.Messages) ([]byte, error) {
-	message := model.Messages{
-		Messages: m.Messages,
-		Language: m.Language,
-		Labels:   m.Labels,
-	}
-
-	msg, err := json.Marshal(message)
+	msg, err := json.Marshal(m)
 	if err != nil {
 		return []byte{}, fmt.Errorf("error while marshaling: %w", err)
 	}
