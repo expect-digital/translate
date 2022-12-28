@@ -7,7 +7,7 @@ import (
 	"github.com/expect-digital/translate/pkg/model"
 )
 
-func EncodeToBytes(m model.Messages) ([]byte, error) {
+func FromGoMessages(m model.Messages) ([]byte, error) {
 	msg, err := json.Marshal(m)
 	if err != nil {
 		return []byte{}, fmt.Errorf("error while marshaling: %w", err)
@@ -16,7 +16,7 @@ func EncodeToBytes(m model.Messages) ([]byte, error) {
 	return msg, nil
 }
 
-func DecodeToMessages(b []byte) (model.Messages, error) {
+func ToGoMessages(b []byte) (model.Messages, error) {
 	var msg model.Messages
 
 	err := json.Unmarshal(b, &msg)
