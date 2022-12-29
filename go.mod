@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.0
+	github.com/soheilhy/cmux v0.1.5
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/text v0.5.0
 	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef
