@@ -79,7 +79,7 @@ func Test_fromNgxTranslate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			result, err := fromNgxTranslate(tt.serialized)
+			result, err := FromNgxTranslate(tt.serialized)
 
 			assert.NoError(t, err)
 			assert.Equal(t, tt.wantMessages, result)
@@ -110,7 +110,7 @@ func Test_toNgxTranslate(t *testing.T) {
 					},
 				},
 			},
-			wantB:   []byte(`[{"ID":"hello","Message":"world"},{"ID":"hello.beautiful","Message":"world"}]`),
+			wantB:   []byte(`{"hello":"world","hello.beautiful":"world"}`),
 			wantErr: false,
 		},
 	}
@@ -120,7 +120,7 @@ func Test_toNgxTranslate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			result, err := toNgxTranslate(tt.messages)
+			result, err := ToNgxTranslate(tt.messages)
 			assert.NoError(t, err)
 
 			assert.Equal(t, tt.wantB, result)

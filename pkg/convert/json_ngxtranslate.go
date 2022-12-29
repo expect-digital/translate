@@ -8,34 +8,28 @@ import (
 	"github.com/expect-digital/translate/pkg/model"
 )
 
-var ErrWrongKey = errors.New("Wrong key type")
-
-func fromNgxTranslate(b []byte) (messages model.Messages, err error) {
+func FromNgxTranslate(b []byte) (messages model.Messages, err error) {
 	var dst map[string]interface{}
 
 	if err = json.Unmarshal(b, &dst); err != nil {
 		return messages, fmt.Errorf("unmarshal ngx translate: %w", err)
 	}
 
-	traverseMap := func(key string, value any) (err error) {
-		return err
-	}
+	var traverseMap func(key string, value interface{}) error
 
-	traverseMap = func(key string, v any) (err error) {
-		switch value := v.(type) {
+	traverseMap = func(key string, value interface{}) (err error) {
+		switch v := value.(type) {
 		default:
-			return ErrWrongKey
+			return errors.New("wrong key type")
 		case string:
-			messages.Messages = append(messages.Messages, model.Message{ID: key, Message: value})
+			messages.Messages = append(messages.Messages, model.Message{ID: key, Message: v})
 		case map[string]interface{}:
-			for key2, val2 := range value {
-				var newKey string
+			for subKey, subValue := range v {
 				if key != "" {
-					newKey += key + "."
+					subKey = key + "." + subKey
 				}
 
-				newKey += key2
-				if err = traverseMap(newKey, val2); err != nil {
+				if err = traverseMap(subKey, subValue); err != nil {
 					return err
 				}
 			}
@@ -51,21 +45,16 @@ func fromNgxTranslate(b []byte) (messages model.Messages, err error) {
 	return messages, nil
 }
 
-func toNgxTranslate(messages model.Messages) (b []byte, err error) {
-	// We Omit Fuzzy key as it is not in specifications
-	type tmpMessage struct {
-		ID, Message string
-	}
-
-	tmpMessages := make([]tmpMessage, 0, len(messages.Messages))
+func ToNgxTranslate(messages model.Messages) (b []byte, err error) {
+	dst := make(map[string]string, len(messages.Messages))
 
 	for _, msg := range messages.Messages {
-		tmpMessages = append(tmpMessages, tmpMessage{ID: msg.ID, Message: msg.Message})
+		dst[msg.ID] = msg.Message
 	}
 
-	b, err = json.Marshal(tmpMessages)
+	b, err = json.Marshal(dst)
 	if err != nil {
-		return nil, fmt.Errorf("marshal messages to ngx translate : %w", err)
+		return nil, fmt.Errorf("marshal to ngx translate : %w", err)
 	}
 
 	return b, nil
