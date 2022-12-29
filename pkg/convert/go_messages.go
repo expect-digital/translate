@@ -55,9 +55,9 @@ func messagesFromPipeline(m pipeline.Messages) model.Messages {
 		Messages: make([]model.Message, 0, len(m.Messages)),
 	}
 
-	for i, value := range m.Messages {
+	for _, value := range m.Messages {
 		msg.Messages = append(msg.Messages, model.Message{
-			ID:      value.ID[i],
+			ID:      value.ID[0],
 			Fuzzy:   value.Fuzzy,
 			Message: value.Message.Msg,
 		})
