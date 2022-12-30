@@ -22,6 +22,6 @@ message DummyResponse {}
 
 service TranslateService {
   rpc Dummy(DummyRequest) returns (DummyResponse) {
-    option (google.api.http) = {get: "/v1/Dummy"};
+    option (google.api.http) = {get: "/v1/dummy"};
   }
 }

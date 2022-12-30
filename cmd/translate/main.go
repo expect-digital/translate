@@ -18,7 +18,7 @@ type TranslateServiceServer struct {
 	pb.UnimplementedTranslateServiceServer
 }
 
-const baseURL = "localhost:8080"
+const serverAddr = "localhost:8080"
 
 func main() {
 	// create new gRPC server
@@ -30,7 +30,7 @@ func main() {
 	err := pb.RegisterTranslateServiceHandlerFromEndpoint(
 		context.Background(),
 		mux,
-		baseURL,
+		serverAddr,
 		[]grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
 	if err != nil {
 		log.Fatal(err)
@@ -41,7 +41,7 @@ func main() {
 		ReadHeaderTimeout: time.Minute,
 	}
 	// creating a listener for server
-	l, err := net.Listen("tcp", baseURL)
+	l, err := net.Listen("tcp", serverAddr)
 	if err != nil {
 		log.Fatal(err)
 	}
