@@ -26,18 +26,17 @@ func FromNgJson(b []byte) (model.Messages, error) {
 		Messages: []model.Message{},
 	}
 
-	f := func(in interface{}) {
-		switch v := in.(type) {
-		case map[string]interface{}:
-			for key, value := range v {
-				msg.Messages = append(msg.Messages, model.Message{ID: key, Message: fmt.Sprint(value)})
+	if translations, isMap := incoming["translations"].(map[string]interface{}); isMap {
+		for key, value := range translations {
+			if message, isString := value.(string); isString {
+				msg.Messages = append(msg.Messages, model.Message{ID: key, Message: message})
+			} else {
+				return model.Messages{}, fmt.Errorf("type check of translation with ID: %s value : %w", key, err)
 			}
-		default:
-			return
 		}
+	} else {
+		return model.Messages{}, fmt.Errorf("type check of translations map: %w", err)
 	}
-
-	f(incoming["translations"])
 
 	return msg, nil
 }
@@ -50,7 +49,7 @@ func ToNgJson(m model.Messages) ([]byte, error) {
 		messages[message.ID] = message.Message
 	}
 
-	result["locale"] = m.Language
+	result["locale"] = m.Language.String()
 	result["translations"] = messages
 
 	msg, err := json.Marshal(result)
