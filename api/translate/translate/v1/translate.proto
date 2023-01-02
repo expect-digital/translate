@@ -5,7 +5,7 @@ package translate.v1;
 import "google/api/annotations.proto";
 
 enum Type {
-  TYPE_UNSPECIFIEDD = 0;
+  TYPE_UNSPECIFIED = 0;
   TYPE_NG_LOCALISE = 1;
   TYPE_NGX_TRANSLATE = 2;
   TYPE_GO = 3;
