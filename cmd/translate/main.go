@@ -8,6 +8,7 @@ import (
 	"time"
 
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
+	"github.com/expect-digital/translate/pkg/translate"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/soheilhy/cmux"
 	"google.golang.org/grpc"
@@ -23,7 +24,7 @@ const serverAddr = "localhost:8080"
 func main() {
 	// create new gRPC server
 	grpcSever := grpc.NewServer()
-	pb.RegisterTranslateServiceServer(grpcSever, &TranslateServiceServer{})
+	pb.RegisterTranslateServiceServer(grpcSever, translate.New())
 	// creating mux for gRPC gateway. This will multiplex or route request different gRPC service
 	mux := runtime.NewServeMux()
 	// setting up a dail up for gRPC service by specifying endpoint/target url

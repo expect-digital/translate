@@ -4,6 +4,13 @@ package translate.v1;
 
 import "google/api/annotations.proto";
 
+enum Type {
+  TYPE_UNSPECIFIED = 0;
+  TYPE_NG_LOCALISE = 1;
+  TYPE_NGX_TRANSLATE = 2;
+  TYPE_GO = 3;
+}
+
 message Message {
   string id = 1;
   string message = 2;
@@ -16,12 +23,17 @@ message Messages {
   map<string, string> labels = 3;
 }
 
-message DummyRequest {}
+message DownloadTranslationFileRequest {
+  string id = 1;
+  Type type = 2;
+}
 
-message DummyResponse {}
+message DownloadTranslationFileResponse {
+  bytes data = 1;
+}
 
 service TranslateService {
-  rpc Dummy(DummyRequest) returns (DummyResponse) {
-    option (google.api.http) = {get: "/v1/dummy"};
+  rpc DownloadTranslationFile(DownloadTranslationFileRequest) returns (stream DownloadTranslationFileResponse) {
+    option (google.api.http) = {get: "/v1/download/{id}"};
   }
 }
