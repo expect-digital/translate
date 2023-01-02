@@ -8,45 +8,45 @@ import (
 	"golang.org/x/text/language"
 )
 
-type NgJson struct {
+type ngJson struct {
 	Locale       language.Tag      `json:"locale"`
 	Translations map[string]string `json:"translations"`
 }
 
 func FromNgJson(b []byte) (model.Messages, error) {
-	var ngJson NgJson
+	var angularJson ngJson
 
-	err := json.Unmarshal(b, &ngJson)
+	err := json.Unmarshal(b, &angularJson)
 	if err != nil {
 		return model.Messages{}, fmt.Errorf("decode NG JSON to go messages: %w", err)
 	}
 
 	msg := model.Messages{
-		Language: ngJson.Locale,
-		Messages: []model.Message{},
+		Language: angularJson.Locale,
+		Messages: make([]model.Message, len(angularJson.Translations)),
 	}
 
-	for key, value := range ngJson.Translations {
-		msg.Messages = append(msg.Messages, model.Message{
+	for key, value := range angularJson.Translations {
+		msg.Messages[0] = model.Message{
 			ID:      key,
 			Message: value,
-		})
+		}
 	}
 
 	return msg, nil
 }
 
 func ToNgJson(m model.Messages) ([]byte, error) {
-	ngJson := NgJson{
+	angularJson := ngJson{
 		Locale:       m.Language,
-		Translations: make(map[string]string),
+		Translations: make(map[string]string, len(m.Messages)),
 	}
 
 	for _, message := range m.Messages {
-		ngJson.Translations[message.ID] = message.Message
+		angularJson.Translations[message.ID] = message.Message
 	}
 
-	result, err := json.Marshal(ngJson)
+	result, err := json.Marshal(angularJson)
 	if err != nil {
 		return nil, fmt.Errorf("encode go NgJson to []byte: %w", err)
 	}
