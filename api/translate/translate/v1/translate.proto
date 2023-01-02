@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package translate.v1;
 
-service TranslateService {}
+import "google/api/annotations.proto";
 
 message Message {
   string id = 1;
@@ -16,3 +16,12 @@ message Messages {
   map<string, string> labels = 3;
 }
 
+message DummyRequest {}
+
+message DummyResponse {}
+
+service TranslateService {
+  rpc Dummy(DummyRequest) returns (DummyResponse) {
+    option (google.api.http) = {get: "/v1/dummy"};
+  }
+}
