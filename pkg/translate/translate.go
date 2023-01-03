@@ -1,12 +1,15 @@
 package translate
 
 import (
-	"bytes"
-	"errors"
+	"context"
 	"fmt"
-	"io"
+	"log"
 
+	"github.com/expect-digital/translate/pkg/convert"
+	"github.com/expect-digital/translate/pkg/model"
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type TranslateServiceServer struct {
@@ -18,34 +21,36 @@ func New() *TranslateServiceServer {
 }
 
 func (t *TranslateServiceServer) UploadTranslationFile(
-	stream pb.TranslateService_UploadTranslationFileServer,
-) error {
-	var fileData bytes.Buffer
+	ctx context.Context,
+	req *pb.UploadTranslationFileRequest,
+) (*pb.UploadTranslationFileResponse, error) {
+	var (
+		messages model.Messages
+		err      error
+	)
 
-	for {
-		req, err := stream.Recv()
-		if errors.Is(err, io.EOF) {
-			break
-		}
-
-		if err != nil {
-			return fmt.Errorf("stream chunk loop: %w", err)
-		}
-
-		chunk := req.GetData()
-		_, err = fileData.Write(chunk)
-
-		if err != nil {
-			return fmt.Errorf("write to bytes buffer: %w", err)
-		}
+	switch req.GetType() {
+	default:
+		return nil, status.Errorf(codes.Internal, "")
+	case pb.Type_UNSPECIFIED:
+		return nil, status.Errorf(codes.InvalidArgument, "Type is missing")
+	case pb.Type_NG_LOCALISE:
+		messages, err = convert.FromNgJson([]byte(req.Data))
+	case pb.Type_NGX_TRANSLATE:
+		messages, err = convert.FromNgxTranslate([]byte(req.Data))
+	case pb.Type_GO:
+		messages, err = convert.FromGo([]byte(req.Data))
 	}
 
-	// 1. Check the label and transform accordingly...
-	// 2. Save to DB/FS...
+	log.Println(messages)
 
-	if err := stream.SendAndClose(&pb.UploadTranslationFileResponse{}); err != nil {
-		return fmt.Errorf("send and close: %w", err)
+	// todo Proper error handling with status codes
+	if err != nil {
+		return nil, fmt.Errorf("convert to messages: %w", err)
 	}
 
-	return nil
+	// Save to DB/FS...
+	_ = messages
+
+	return &pb.UploadTranslationFileResponse{}, nil
 }

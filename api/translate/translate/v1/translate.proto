@@ -5,10 +5,10 @@ package translate.v1;
 import "google/api/annotations.proto";
 
 enum Type {
-  TYPE_UNSPECIFIED = 0;
-  TYPE_NG_LOCALISE = 1;
-  TYPE_NGX_TRANSLATE = 2;
-  TYPE_GO = 3;
+  UNSPECIFIED = 0;
+  NG_LOCALISE = 1;
+  NGX_TRANSLATE = 2;
+  GO = 3;
 }
 
 message Message {
@@ -24,17 +24,19 @@ message Messages {
 }
 
 message UploadTranslationFileRequest {
-  bytes data = 1;
-  map<string, string> labels = 2;
-  Type type = 3;
+  string translationID = 1;
+  string data = 2;
+  map<string, string> labels = 3;
+  Type type = 4;
 }
 
-message UploadTranslationFileResponse {
-  Messages messages = 1;
-}
+message UploadTranslationFileResponse {}
 
 service TranslateService {
-  rpc UploadTranslationFile(stream UploadTranslationFileRequest) returns (UploadTranslationFileResponse) {
-    option (google.api.http) = {post: "/v1/upload/translationfile"};
+  rpc UploadTranslationFile(UploadTranslationFileRequest) returns (UploadTranslationFileResponse) {
+    option (google.api.http) = {
+      put: "/v1/translations/{translationID}"
+      body: "*"
+    };
   }
 }
