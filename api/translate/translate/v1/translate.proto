@@ -5,10 +5,10 @@ package translate.v1;
 import "google/api/annotations.proto";
 
 enum Type {
-  Type_UNSPECIFIED = 0;
-  Type_NG_LOCALISE = 1;
-  Type_NGX_TRANSLATE = 2;
-  Type_GO = 3;
+  TYPE_UNSPECIFIED = 0;
+  TYPE_NG_LOCALISE = 1;
+  TYPE_NGX_TRANSLATE = 2;
+  TYPE_GO = 3;
 }
 
 message Message {

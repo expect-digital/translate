@@ -32,13 +32,13 @@ func (t *TranslateServiceServer) UploadTranslationFile(
 	switch req.GetType() {
 	default:
 		return nil, status.Errorf(codes.Internal, "")
-	case pb.Type_Type_UNSPECIFIED:
+	case pb.Type_TYPE_UNSPECIFIED:
 		return nil, status.Errorf(codes.InvalidArgument, "Type is missing")
-	case pb.Type_Type_NG_LOCALISE:
+	case pb.Type_TYPE_NG_LOCALISE:
 		messages, err = convert.FromNgJson([]byte(req.Data))
-	case pb.Type_Type_NGX_TRANSLATE:
+	case pb.Type_TYPE_NGX_TRANSLATE:
 		messages, err = convert.FromNgxTranslate([]byte(req.Data))
-	case pb.Type_Type_GO:
+	case pb.Type_TYPE_GO:
 		messages, err = convert.FromGo([]byte(req.Data))
 	}
 
