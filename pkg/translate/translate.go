@@ -40,11 +40,11 @@ func (t *TranslateServiceServer) DownloadTranslationFile(
 		return nil, status.Errorf(codes.Internal, "")
 	case pb.Type_TYPE_UNSPECIFIED:
 		return nil, status.Errorf(codes.InvalidArgument, "Type is missing")
-	case pb.Type_TYPE_NG_LOCALISE:
+	case pb.Type_NG_LOCALISE:
 		data, err = convert.ToNgJson(messages)
-	case pb.Type_TYPE_NGX_TRANSLATE:
+	case pb.Type_NGX_TRANSLATE:
 		data, err = convert.ToNgxTranslate(messages)
-	case pb.Type_TYPE_GO:
+	case pb.Type_GO:
 		data, err = convert.FromGoMessages(messages)
 	}
 
