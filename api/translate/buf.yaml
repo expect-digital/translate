@@ -7,3 +7,5 @@ breaking:
 lint:
   use:
     - DEFAULT
+  except:
+    - ENUM_VALUE_PREFIX

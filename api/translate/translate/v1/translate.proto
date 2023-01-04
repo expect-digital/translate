@@ -6,9 +6,9 @@ import "google/api/annotations.proto";
 
 enum Type {
   TYPE_UNSPECIFIED = 0;
-  TYPE_NG_LOCALISE = 1;
-  TYPE_NGX_TRANSLATE = 2;
-  TYPE_GO = 3;
+  NG_LOCALISE = 1;
+  NGX_TRANSLATE = 2;
+  GO = 3;
 }
 
 message Message {
@@ -36,7 +36,7 @@ service TranslateService {
   rpc UploadTranslationFile(UploadTranslationFileRequest) returns (UploadTranslationFileResponse) {
     option (google.api.http) = {
       put: "/v1/translations/{translation_id}"
-      body: "*"
+      body: "data"
     };
   }
 }
