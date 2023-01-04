@@ -3,7 +3,6 @@ package translate
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/expect-digital/translate/pkg/convert"
 	"github.com/expect-digital/translate/pkg/model"
