@@ -23,6 +23,10 @@ func (t *TranslateServiceServer) UploadTranslationFile(
 	ctx context.Context,
 	req *pb.UploadTranslationFileRequest,
 ) (*pb.UploadTranslationFileResponse, error) {
+	if len(req.GetTranslationId()) == 0 {
+		return nil, status.Errorf(codes.InvalidArgument, "Missing translation_id")
+	}
+
 	var (
 		messages model.Messages
 		err      error
