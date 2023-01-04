@@ -42,8 +42,6 @@ func (t *TranslateServiceServer) UploadTranslationFile(
 		messages, err = convert.FromGo([]byte(req.Data))
 	}
 
-	log.Println(messages)
-
 	// todo Proper error handling with status codes
 	if err != nil {
 		return nil, fmt.Errorf("convert to messages: %w", err)
