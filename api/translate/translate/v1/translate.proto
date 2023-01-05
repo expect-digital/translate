@@ -33,11 +33,24 @@ message UploadTranslationFileRequest {
 
 message UploadTranslationFileResponse {}
 
+message DownloadTranslationFileRequest {
+  string translation_id = 1;
+  Type type = 2;
+  string language = 3;
+}
+
+message DownloadTranslationFileResponse {
+  bytes data = 1;
+}
+
 service TranslateService {
   rpc UploadTranslationFile(UploadTranslationFileRequest) returns (UploadTranslationFileResponse) {
     option (google.api.http) = {
       put: "/v1/translations/{translation_id}"
       body: "data"
     };
+  }
+  rpc DownloadTranslationFile(DownloadTranslationFileRequest) returns (DownloadTranslationFileResponse) {
+    option (google.api.http) = {get: "/v1/translations/{translation_id}"};
   }
 }
