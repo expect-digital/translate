@@ -23,6 +23,16 @@ message Messages {
   map<string, string> labels = 3;
 }
 
+message UploadTranslationFileRequest {
+  string translation_id = 1;
+  string data = 2;
+  map<string, string> labels = 3;
+  Type type = 4;
+  string language = 5;
+}
+
+message UploadTranslationFileResponse {}
+
 message DownloadTranslationFileRequest {
   string translation_id = 1;
   Type type = 2;
@@ -34,6 +44,12 @@ message DownloadTranslationFileResponse {
 }
 
 service TranslateService {
+  rpc UploadTranslationFile(UploadTranslationFileRequest) returns (UploadTranslationFileResponse) {
+    option (google.api.http) = {
+      put: "/v1/translations/{translation_id}"
+      body: "data"
+    };
+  }
   rpc DownloadTranslationFile(DownloadTranslationFileRequest) returns (DownloadTranslationFileResponse) {
     option (google.api.http) = {get: "/v1/translations/{translation_id}"};
   }
