@@ -8,7 +8,9 @@ import (
 	"golang.org/x/text/message/pipeline"
 )
 
-func FromGoMessages(m model.Messages) ([]byte, error) {
+type To func(model.Messages) ([]byte, error)
+
+func ToGo(m model.Messages) ([]byte, error) {
 	pipelineMsg := messagesToPipeline(m)
 
 	msg, err := json.Marshal(pipelineMsg)
@@ -19,7 +21,7 @@ func FromGoMessages(m model.Messages) ([]byte, error) {
 	return msg, nil
 }
 
-func ToGoMessages(b []byte) (model.Messages, error) {
+func FromGo(b []byte) (model.Messages, error) {
 	var pipelineMsg pipeline.Messages
 
 	err := json.Unmarshal(b, &pipelineMsg)

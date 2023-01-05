@@ -26,6 +26,7 @@ message Messages {
 message DownloadTranslationFileRequest {
   string translation_id = 1;
   Type type = 2;
+  string language = 3;
 }
 
 message DownloadTranslationFileResponse {
