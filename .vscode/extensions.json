@@ -1,5 +1,8 @@
 {
   "recommendations": [
-    "emeraldwalk.runonsave"
+    "emeraldwalk.runonsave",
+    "bufbuild.vscode-buf",
+    "earthly.earthfile-syntax-highlighting",
+    "mikestead.dotenv"
   ]
 }
