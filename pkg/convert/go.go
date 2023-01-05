@@ -8,8 +8,6 @@ import (
 	"golang.org/x/text/message/pipeline"
 )
 
-type From = func([]byte) (model.Messages, error)
-
 func ToGo(m model.Messages) ([]byte, error) {
 	pipelineMsg := messagesToPipeline(m)
 
