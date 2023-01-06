@@ -2,10 +2,10 @@ package translate
 
 import (
 	"context"
-
 	"github.com/expect-digital/translate/pkg/convert"
 	"github.com/expect-digital/translate/pkg/model"
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
+	"github.com/expect-digital/translate/repo"
 	"golang.org/x/text/language"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -13,10 +13,13 @@ import (
 
 type TranslateServiceServer struct {
 	pb.UnimplementedTranslateServiceServer
+	repo repo.Repo
 }
 
-func New() *TranslateServiceServer {
-	return new(TranslateServiceServer)
+func New(r repo.Repo) *TranslateServiceServer {
+	return &TranslateServiceServer{
+		repo: r,
+	}
 }
 
 func (t *TranslateServiceServer) UploadTranslationFile(
@@ -65,7 +68,12 @@ func (t *TranslateServiceServer) UploadTranslationFile(
 	// Save to DB/FS...
 	messages.Language = language
 	messages.Labels = reqLabels
-	_ = messages
+	msg := messages
+
+	err = t.repo.SaveMessages(msg)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "saving messages: %w", err)
+	}
 
 	return &pb.UploadTranslationFileResponse{}, nil
 }

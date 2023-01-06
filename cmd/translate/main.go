@@ -7,6 +7,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/dgraph-io/badger/v3"
+
+	"github.com/expect-digital/translate/repo"
+
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
 	"github.com/expect-digital/translate/pkg/translate"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -22,19 +26,29 @@ type TranslateServiceServer struct {
 const serverAddr = "localhost:8080"
 
 func main() {
+	db, err := repo.Connect()
+
+	defer func(db *badger.DB) {
+		err = db.Close()
+		if err != nil {
+			log.Panic(err)
+		}
+	}(db)
+
+	messagesRepo := repo.NewRepo(db)
 	// create new gRPC server
 	grpcSever := grpc.NewServer()
-	pb.RegisterTranslateServiceServer(grpcSever, translate.New())
+	pb.RegisterTranslateServiceServer(grpcSever, translate.New(*messagesRepo))
 	// creating mux for gRPC gateway. This will multiplex or route request different gRPC service
 	mux := runtime.NewServeMux()
 	// setting up a dail up for gRPC service by specifying endpoint/target url
-	err := pb.RegisterTranslateServiceHandlerFromEndpoint(
+	err = pb.RegisterTranslateServiceHandlerFromEndpoint(
 		context.Background(),
 		mux,
 		serverAddr,
 		[]grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 	// Creating a normal HTTP server
 	server := http.Server{
@@ -44,7 +58,7 @@ func main() {
 	// creating a listener for server
 	l, err := net.Listen("tcp", serverAddr)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	m := cmux.New(l)
@@ -66,6 +80,6 @@ func main() {
 	}()
 
 	if err := m.Serve(); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
