@@ -3,10 +3,11 @@ package translate
 import (
 	"context"
 
+	"github.com/expect-digital/translate/pkg/repo"
+
 	"github.com/expect-digital/translate/pkg/convert"
 	"github.com/expect-digital/translate/pkg/model"
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
-	"github.com/expect-digital/translate/repo"
 	"golang.org/x/text/language"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

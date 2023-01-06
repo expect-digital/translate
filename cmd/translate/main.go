@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dgraph-io/badger/v3"
+	"github.com/expect-digital/translate/pkg/repo"
 
-	"github.com/expect-digital/translate/repo"
+	"github.com/dgraph-io/badger/v3"
 
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
 	"github.com/expect-digital/translate/pkg/translate"
