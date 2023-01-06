@@ -18,3 +18,4 @@
 !.vscode/settings.json
 !.vscode/extensions.json
 pkg/server
+website/src/app/services/api
