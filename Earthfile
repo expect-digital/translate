@@ -58,6 +58,6 @@ openapi-angular-client:
   COPY +openapi-swagger/translate/v1/translate.swagger.json .
   RUN docker-entrypoint.sh generate \
     --input-spec translate.swagger.json \
-    --generator-name typescript \
+    --generator-name typescript-angular \
     --output client
   SAVE ARTIFACT client AS LOCAL website/src/app/services/api
