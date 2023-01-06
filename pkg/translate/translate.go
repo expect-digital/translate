@@ -2,6 +2,7 @@ package translate
 
 import (
 	"context"
+
 	"github.com/expect-digital/translate/pkg/convert"
 	"github.com/expect-digital/translate/pkg/model"
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
@@ -68,11 +69,10 @@ func (t *TranslateServiceServer) UploadTranslationFile(
 	// Save to DB/FS...
 	messages.Language = language
 	messages.Labels = reqLabels
-	msg := messages
 
-	err = t.repo.SaveMessages(msg)
+	err = t.repo.SaveMessages(reqTranslationID, messages)
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "saving messages: %w", err)
+		return nil, status.Errorf(codes.Internal, "saving messages: %s", err)
 	}
 
 	return &pb.UploadTranslationFileResponse{}, nil

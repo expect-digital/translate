@@ -1,10 +1,11 @@
 package repo
 
 import (
+	"encoding/json"
 	"fmt"
+
 	"github.com/dgraph-io/badger/v3"
 	"github.com/expect-digital/translate/pkg/model"
-	"log"
 )
 
 type Repo struct {
@@ -20,21 +21,38 @@ func NewRepo(db *badger.DB) *Repo {
 func Connect() (*badger.DB, error) {
 	db, err := badger.Open(badger.DefaultOptions("").WithInMemory(true))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("connect to DB: %w", err)
 	}
 
 	return db, nil
 }
 
-func (repo *Repo) SaveMessages(m model.Messages) error {
-	for _, value := range m.Messages {
-		err := repo.db.Update(func(txn *badger.Txn) error {
-			err := txn.Set([]byte(value.ID), []byte(value.Message))
-			return fmt.Errorf("setting key/value pair: %w", err)
-		})
-		if err != nil {
-			return fmt.Errorf("creating read/write transaction: %w", err)
-		}
+func (repo *Repo) SaveMessages(id string, m model.Messages) error {
+	messagesJson, err := encodeMessages(m)
+	if err != nil {
+		return err
 	}
+
+	err = repo.db.Update(func(txn *badger.Txn) error {
+		err = txn.Set([]byte(id), messagesJson)
+		if err != nil {
+			err = fmt.Errorf("setting key/value pairs %w", err)
+		}
+		return err
+	})
+	if err != nil {
+		return fmt.Errorf("creating read/write transaction: %w", err)
+	}
+
 	return nil
+}
+
+func encodeMessages(m model.Messages) ([]byte, error) {
+	data, err := json.Marshal(m)
+	if err != nil {
+		err = fmt.Errorf("model.Messages marshaliing to JSON %w", err)
+		return nil, err
+	}
+
+	return data, err
 }
