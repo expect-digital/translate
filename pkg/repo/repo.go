@@ -30,7 +30,7 @@ func Connect() (*badger.DB, error) {
 func (repo *Repo) SaveMessages(id string, m model.Messages) error {
 	messagesJson, err := json.Marshal(m)
 	if err != nil {
-		return fmt.Errorf("marshaling model.Messages to JSON")
+		return fmt.Errorf("marshaling model.Messages to JSON: %w", err)
 	}
 
 	err = repo.db.Update(func(txn *badger.Txn) error {
