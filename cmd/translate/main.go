@@ -27,6 +27,9 @@ const serverAddr = "localhost:8080"
 
 func main() {
 	db, err := repo.Connect()
+	if err != nil {
+		log.Panic(err)
+	}
 
 	defer func(db *badger.DB) {
 		err = db.Close()

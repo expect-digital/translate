@@ -67,7 +67,6 @@ func (t *TranslateServiceServer) UploadTranslationFile(
 		return nil, status.Errorf(codes.InvalidArgument, "parse data: %s", err)
 	}
 
-	// Save to DB/FS...
 	messages.Language = language
 	messages.Labels = reqLabels
 
