@@ -46,7 +46,7 @@ message DownloadTranslationFileResponse {
 message ListMessagesRequest {}
 
 message ListMessagesResponse {
-  Messages messages = 1;
+  repeated Messages messages = 1;
 }
 
 service TranslateService {

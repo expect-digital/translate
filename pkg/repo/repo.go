@@ -27,13 +27,13 @@ func Connect() (*badger.DB, error) {
 	return db, nil
 }
 
-func (repo *Repo) SaveMessages(id string, m model.Messages) error {
+func (r *Repo) SaveMessages(id string, m model.Messages) error {
 	messagesJson, err := json.Marshal(m)
 	if err != nil {
 		return fmt.Errorf("marshaling model.Messages to JSON: %w", err)
 	}
 
-	err = repo.db.Update(func(txn *badger.Txn) error {
+	err = r.db.Update(func(txn *badger.Txn) error {
 		err = txn.Set([]byte(id), messagesJson)
 		if err != nil {
 			err = fmt.Errorf("setting key/value pairs %w", err)
@@ -45,4 +45,34 @@ func (repo *Repo) SaveMessages(id string, m model.Messages) error {
 	}
 
 	return nil
+}
+
+func (r *Repo) ListMessages() ([]model.Messages, error) {
+	var messages []model.Messages
+
+	err := r.db.View(func(txn *badger.Txn) error {
+		it := txn.NewIterator(badger.DefaultIteratorOptions)
+		defer it.Close()
+
+		for it.Rewind(); it.Valid(); it.Next() {
+			item := it.Item()
+			var message model.Messages
+
+			err := item.Value(func(val []byte) error {
+				return json.Unmarshal(val, &message) //nolint:wrapcheck
+			})
+			if err != nil {
+				return fmt.Errorf("unmarshal value to messages: %w", err)
+			}
+
+			messages = append(messages, message)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf(":%w", err)
+	}
+
+	return messages, nil
 }
