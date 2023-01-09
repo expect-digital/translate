@@ -3,6 +3,8 @@ package translate
 import (
 	"context"
 
+	"github.com/expect-digital/translate/pkg/repo"
+
 	"github.com/expect-digital/translate/pkg/convert"
 	"github.com/expect-digital/translate/pkg/model"
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
@@ -13,10 +15,13 @@ import (
 
 type TranslateServiceServer struct {
 	pb.UnimplementedTranslateServiceServer
+	repo repo.Repo
 }
 
-func New() *TranslateServiceServer {
-	return new(TranslateServiceServer)
+func New(r repo.Repo) *TranslateServiceServer {
+	return &TranslateServiceServer{
+		repo: r,
+	}
 }
 
 func (t *TranslateServiceServer) UploadTranslationFile(
@@ -62,10 +67,13 @@ func (t *TranslateServiceServer) UploadTranslationFile(
 		return nil, status.Errorf(codes.InvalidArgument, "parse data: %s", err)
 	}
 
-	// Save to DB/FS...
 	messages.Language = language
 	messages.Labels = reqLabels
-	_ = messages
+
+	err = t.repo.SaveMessages(reqTranslationID, messages)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "saving messages: %s", err)
+	}
 
 	return &pb.UploadTranslationFileResponse{}, nil
 }
