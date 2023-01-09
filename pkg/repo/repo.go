@@ -34,7 +34,11 @@ func (repo *Repo) SaveMessages(id string, m model.Messages) error {
 	}
 
 	err = repo.db.Update(func(txn *badger.Txn) error {
-		return txn.Set([]byte(id), messagesJson)
+		err = txn.Set([]byte(id), messagesJson)
+		if err != nil {
+			err = fmt.Errorf("setting key/value pairs %w", err)
+		}
+		return err
 	})
 	if err != nil {
 		return fmt.Errorf("creating read/write transaction: %w", err)
@@ -47,15 +51,16 @@ func (repo *Repo) LoadMessages(id string) error {
 	err := repo.db.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte(id))
 		if err != nil {
-			return err
+			return fmt.Errorf("getting key/value pair: %w", err)
 		}
 		err = item.Value(func(val []byte) error {
-			return nil
+			return fmt.Errorf("getting the value of the item: %w", err)
 		})
 		return nil
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("creating read/write transaction: %w", err)
 	}
+
 	return nil
 }
