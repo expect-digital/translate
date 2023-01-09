@@ -6,6 +6,7 @@ import (
 
 	"github.com/dgraph-io/badger/v3"
 	"github.com/expect-digital/translate/pkg/model"
+	"golang.org/x/exp/slices"
 )
 
 type Repo struct {
@@ -27,14 +28,41 @@ func Connect() (*badger.DB, error) {
 	return db, nil
 }
 
-func (repo *Repo) SaveMessages(id string, m model.Messages) error {
-	messagesJson, err := json.Marshal(m)
+func (r *Repo) SaveMessages(m model.Messages) error {
+	var messages []model.Messages
+
+	key := []byte(m.TranslationID)
+
+	err := r.db.View(func(txn *badger.Txn) error {
+		v, err := txn.Get(key)
+		if err != nil {
+			return err
+		}
+
+		return v.Value(func(val []byte) error {
+			return json.Unmarshal(val, &messages)
+		})
+	})
+	if err != nil {
+		return err
+	}
+
+	i := slices.IndexFunc(messages, func(v model.Messages) bool {
+		return v.Language == m.Language
+	})
+	if i >= 0 {
+		messages[i] = m
+	} else {
+		messages = append(messages, m)
+	}
+
+	messagesJson, err := json.Marshal(messages)
 	if err != nil {
 		return fmt.Errorf("marshaling model.Messages to JSON: %w", err)
 	}
 
-	err = repo.db.Update(func(txn *badger.Txn) error {
-		return txn.Set([]byte(id), messagesJson) //nolint:wrapcheck
+	err = r.db.Update(func(txn *badger.Txn) error {
+		return txn.Set(key, messagesJson) //nolint:wrapcheck
 	})
 	if err != nil {
 		return fmt.Errorf("creating read/write transaction: %w", err)
@@ -43,10 +71,10 @@ func (repo *Repo) SaveMessages(id string, m model.Messages) error {
 	return nil
 }
 
-func (repo *Repo) LoadMessages(id string) (model.Messages, error) {
-	var msg model.Messages
+func (r *Repo) LoadMessages(id string) ([]model.Messages, error) {
+	var msg []model.Messages
 
-	err := repo.db.View(func(txn *badger.Txn) error {
+	err := r.db.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte(id))
 		if err != nil {
 			return fmt.Errorf("getting key/value pair: %w", err)
@@ -69,7 +97,7 @@ func (repo *Repo) LoadMessages(id string) (model.Messages, error) {
 		return nil
 	})
 	if err != nil {
-		return model.Messages{}, fmt.Errorf("creating read transaction: %w", err)
+		return nil, fmt.Errorf("creating read transaction: %w", err)
 	}
 
 	return msg, nil
