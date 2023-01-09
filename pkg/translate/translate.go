@@ -122,5 +122,10 @@ func (t *TranslateServiceServer) DownloadTranslationFile(
 		return nil, status.Errorf(codes.Internal, "serialize data: %s", err)
 	}
 
+	err = t.repo.LoadMessages(reqTranslationID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "loading messages: %s", err)
+	}
+
 	return &pb.DownloadTranslationFileResponse{Data: data}, nil
 }
