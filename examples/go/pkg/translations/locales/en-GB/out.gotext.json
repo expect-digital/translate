@@ -1,0 +1,85 @@
+{
+    "language": "en-GB",
+    "messages": [
+        {
+            "id": "Hello",
+            "message": "Hello",
+            "translation": "Hello",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "World",
+            "message": "World",
+            "translation": "World",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "User has been registered successfully",
+            "message": "User has been registered successfully",
+            "translation": "User has been registered successfully",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Congrats! You are in {Country}",
+            "message": "Congrats! You are in {Country}",
+            "translation": "Congrats! You are in {Country}",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "Country",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "country"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "{City} is a city of {Country}!",
+            "message": "{City} is a city of {Country}!",
+            "translation": "{City} is a city of {Country}!",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "City",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "location.city"
+                },
+                {
+                    "id": "Country",
+                    "string": "%[2]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 2,
+                    "expr": "location.country"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "{NumberOfFiles} files remaining!",
+            "message": "{NumberOfFiles} files remaining!",
+            "translation": "{NumberOfFiles} files remaining!",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "NumberOfFiles",
+                    "string": "%[1]d",
+                    "type": "int",
+                    "underlyingType": "int",
+                    "argNum": 1,
+                    "expr": "numberOfFiles"
+                }
+            ],
+            "fuzzy": true
+        }
+    ]
+}
