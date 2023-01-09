@@ -71,7 +71,7 @@ func (r *Repo) ListMessages() ([]model.Messages, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf(":%w", err)
+		return nil, fmt.Errorf("badgerDB read :%w", err)
 	}
 
 	return messages, nil
