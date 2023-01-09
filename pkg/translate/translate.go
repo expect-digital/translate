@@ -6,7 +6,6 @@ import (
 	"github.com/expect-digital/translate/pkg/repo"
 
 	"github.com/expect-digital/translate/pkg/convert"
-	"github.com/expect-digital/translate/pkg/model"
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
 	"golang.org/x/text/language"
 	"google.golang.org/grpc/codes"
@@ -115,16 +114,15 @@ func (t *TranslateServiceServer) DownloadTranslationFile(
 	}
 	// find file from DB/FS with language
 	_ = language
-	messages := model.Messages{}
+
+	messages, err := t.repo.LoadMessages(reqTranslationID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "loading messages: %s", err)
+	}
 
 	data, err := to(messages)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "serialize data: %s", err)
-	}
-
-	err = t.repo.LoadMessages(reqTranslationID)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "loading messages: %s", err)
 	}
 
 	return &pb.DownloadTranslationFileResponse{Data: data}, nil

@@ -34,11 +34,7 @@ func (repo *Repo) SaveMessages(id string, m model.Messages) error {
 	}
 
 	err = repo.db.Update(func(txn *badger.Txn) error {
-		err = txn.Set([]byte(id), messagesJson)
-		if err != nil {
-			err = fmt.Errorf("setting key/value pairs %w", err)
-		}
-		return err
+		return txn.Set([]byte(id), messagesJson) //nolint:wrapcheck
 	})
 	if err != nil {
 		return fmt.Errorf("creating read/write transaction: %w", err)
@@ -47,20 +43,34 @@ func (repo *Repo) SaveMessages(id string, m model.Messages) error {
 	return nil
 }
 
-func (repo *Repo) LoadMessages(id string) error {
+func (repo *Repo) LoadMessages(id string) (model.Messages, error) {
+	var msg model.Messages
+
 	err := repo.db.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte(id))
 		if err != nil {
 			return fmt.Errorf("getting key/value pair: %w", err)
 		}
+
 		err = item.Value(func(val []byte) error {
-			return fmt.Errorf("getting the value of the item: %w", err)
+			err = json.Unmarshal(val, &msg)
+
+			if err != nil {
+				return fmt.Errorf("unmarshaling JSON to model.Messages: %w", err)
+			}
+
+			return nil
 		})
+
+		if err != nil {
+			return fmt.Errorf("retrieving value from badger db %w", err)
+		}
+
 		return nil
 	})
 	if err != nil {
-		return fmt.Errorf("creating read/write transaction: %w", err)
+		return model.Messages{}, fmt.Errorf("creating read transaction: %w", err)
 	}
 
-	return nil
+	return msg, nil
 }
