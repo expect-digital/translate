@@ -18,9 +18,10 @@ message Message {
 }
 
 message Messages {
-  string language = 1;
-  repeated Message messages = 2;
-  map<string, string> labels = 3;
+  string translation_id = 1;
+  string language = 2;
+  repeated Message messages = 3;
+  map<string, string> labels = 4;
 }
 
 message UploadTranslationFileRequest {
