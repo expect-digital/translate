@@ -121,7 +121,7 @@ func (t *TranslateServiceServer) DownloadTranslationFile(
 
 	switch {
 	case errors.Is(err, repo.ErrNotFound):
-		return nil, status.Errorf(codes.NotFound, "No translations with id '%s'", reqTranslationID)
+		return nil, status.Errorf(codes.NotFound, "no translations with id '%s'", reqTranslationID)
 	case err != nil:
 		return nil, status.Errorf(codes.Internal, "loading messages: %s", err)
 	}
