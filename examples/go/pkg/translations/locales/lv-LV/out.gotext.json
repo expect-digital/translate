@@ -1,0 +1,73 @@
+{
+    "language": "lv-LV",
+    "messages": [
+        {
+            "id": "Hello",
+            "message": "Hello",
+            "translation": ""
+        },
+        {
+            "id": "World",
+            "message": "World",
+            "translation": ""
+        },
+        {
+            "id": "User has been registered successfully",
+            "message": "User has been registered successfully",
+            "translation": ""
+        },
+        {
+            "id": "Congrats! You are in {Country}",
+            "message": "Congrats! You are in {Country}",
+            "translation": "",
+            "placeholders": [
+                {
+                    "id": "Country",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "country"
+                }
+            ]
+        },
+        {
+            "id": "{City} is a city of {Country}!",
+            "message": "{City} is a city of {Country}!",
+            "translation": "",
+            "placeholders": [
+                {
+                    "id": "City",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "location.city"
+                },
+                {
+                    "id": "Country",
+                    "string": "%[2]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 2,
+                    "expr": "location.country"
+                }
+            ]
+        },
+        {
+            "id": "{NumberOfFiles} files remaining!",
+            "message": "{NumberOfFiles} files remaining!",
+            "translation": "",
+            "placeholders": [
+                {
+                    "id": "NumberOfFiles",
+                    "string": "%[1]d",
+                    "type": "int",
+                    "underlyingType": "int",
+                    "argNum": 1,
+                    "expr": "numberOfFiles"
+                }
+            ]
+        }
+    ]
+}
