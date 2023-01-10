@@ -50,6 +50,12 @@ message UpdateMessagesRequest {
 
 message UpdateMessagesResponse {}
 
+message ListMessagesRequest {}
+
+message ListMessagesResponse {
+  repeated Messages messages = 1;
+}
+
 service TranslateService {
   rpc UploadTranslationFile(UploadTranslationFileRequest) returns (UploadTranslationFileResponse) {
     option (google.api.http) = {
@@ -59,6 +65,9 @@ service TranslateService {
   }
   rpc DownloadTranslationFile(DownloadTranslationFileRequest) returns (DownloadTranslationFileResponse) {
     option (google.api.http) = {get: "/v1/translations/{translation_id}"};
+  }
+  rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse) {
+    option (google.api.http) = {get: "/v1/messages"};
   }
   rpc UpdateMessages(UpdateMessagesRequest) returns (UpdateMessagesResponse) {
     option (google.api.http) = {
