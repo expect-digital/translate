@@ -2,6 +2,7 @@ package translate
 
 import (
 	"context"
+	"errors"
 
 	"github.com/expect-digital/translate/pkg/model"
 	"github.com/expect-digital/translate/pkg/repo"
@@ -115,21 +116,24 @@ func (t *TranslateServiceServer) DownloadTranslationFile(
 	case pb.Type_GO:
 		to = convert.ToGo
 	}
-	// find file from DB/FS with language
 
-	list, err := t.repo.LoadMessages(reqTranslationID)
-	if err != nil {
+	messageList, err := t.repo.LoadMessages(reqTranslationID)
+
+	switch {
+	case errors.Is(err, repo.ErrNotFound):
+		return nil, status.Errorf(codes.NotFound, "No translations with id '%s'", reqTranslationID)
+	case err != nil:
 		return nil, status.Errorf(codes.Internal, "loading messages: %s", err)
 	}
 
-	i := slices.IndexFunc(list, func(v model.Messages) bool {
-		return v.Language == language
+	i := slices.IndexFunc(messageList, func(v model.Messages) bool {
+		return v.Language.String() == language.String()
 	})
 	if i < 0 {
-		return nil, status.Error(codes.NotFound, "")
+		i = 0
 	}
 
-	data, err := to(list[i])
+	data, err := to(messageList[i])
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "serialize data: %s", err)
 	}

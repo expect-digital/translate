@@ -29,7 +29,7 @@ func MessagesFromProto(m *pb.Messages) (model.Messages, error) {
 	}
 
 	messageModel := model.Messages{
-		TranslationID: m.GetTranslationId(),
+		TranslationID: m.TranslationId,
 		Labels:        m.Labels,
 		Language:      tag,
 		Messages:      messagesToAdd,
