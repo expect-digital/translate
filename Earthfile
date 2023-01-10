@@ -2,6 +2,12 @@ VERSION 0.6
 ARG go_version=1.19.4
 ARG golangci_lint_version=1.50.1
 ARG openapitools_version=6.2.1
+FROM golang:$go_version-alpine
+
+init:
+  RUN printf "#!/bin/sh\nearthly +lint" > pre-push
+  RUN chmod ug+x pre-push
+  SAVE ARTIFACT pre-push AS LOCAL .git/hooks/pre-push
 
 proto:
   FROM bufbuild/buf
@@ -14,7 +20,6 @@ proto:
   SAVE ARTIFACT gen/proto/go/translate/v1 translate/v1 AS LOCAL pkg/server/translate/v1
 
 deps:
-  FROM golang:$go_version-alpine
   ENV CGO_ENABLED=0
   RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v$golangci_lint_version
   WORKDIR /translate
