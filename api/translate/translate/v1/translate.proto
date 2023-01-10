@@ -47,11 +47,11 @@ message DownloadTranslationFileResponse {
 service TranslateService {
   rpc UploadTranslationFile(UploadTranslationFileRequest) returns (UploadTranslationFileResponse) {
     option (google.api.http) = {
-      put: "/v1/translations/{translation_id}"
+      put: "/v1/translation/file/{translation_id}"
       body: "data"
     };
   }
   rpc DownloadTranslationFile(DownloadTranslationFileRequest) returns (DownloadTranslationFileResponse) {
-    option (google.api.http) = {get: "/v1/translations/{translation_id}"};
+    option (google.api.http) = {get: "/v1/translation/file/{translation_id}"};
   }
 }
