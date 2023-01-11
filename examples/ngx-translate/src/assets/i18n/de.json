@@ -4,11 +4,11 @@
   },
   "title": "Service-Feedback für {company}",
   "name": {
-    "label": "Namen",
+    "label": "<strong>Namen</strong>",
     "placeholder": "Name eingeben"
   },
   "gender": {
-    "label": "Geschlecht",
+    "label": "<strong>Geschlecht</strong>",
     "select": "Wähle Geschlecht",
     "options": {
       "male": "Männlich",
@@ -17,11 +17,11 @@
     }
   },
   "comment": {
-    "label": "Kommentar",
+    "label": "<strong>Kommentar</strong>",
     "placeholder": "Kommentar eingeben"
   },
   "rating": {
-    "label": "Bewerten Sie unseren Kundenservice:",
+    "label": "<strong>Bewerten Sie unseren Kundenservice:</strong>",
     "options": {
       "excellent": "Ausgezeichnet",
       "good": "Gute",
@@ -31,6 +31,8 @@
   "submit": {
     "label": "Senden"
   },
+  "requiredErrorMessage": "Dies ist ein Pflichtfeld.",
+  "successfulSubmitMessage": "Vielen Dank für Ihr wertvolles Feedback!!!\nDas Feedback wurde erfolgreich übermittelt.",
   "pluralization": {
     "label": "Gegenstände auswählen",
     "items": "Du hast ausgewählt {count, plural, =0{nichts} one{eins} other{mehrere}} {count, plural, =0{} one{Artikel} other{Produkte}}.",
