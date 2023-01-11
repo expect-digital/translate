@@ -2,11 +2,14 @@ package translate
 
 import (
 	"context"
+	"errors"
 
+	"github.com/expect-digital/translate/pkg/model"
 	"github.com/expect-digital/translate/pkg/repo"
 
 	"github.com/expect-digital/translate/pkg/convert"
 	pb "github.com/expect-digital/translate/pkg/server/translate/v1"
+	"golang.org/x/exp/slices"
 	"golang.org/x/text/language"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -68,8 +71,9 @@ func (t *TranslateServiceServer) UploadTranslationFile(
 
 	messages.Language = language
 	messages.Labels = reqLabels
+	messages.TranslationID = reqTranslationID
 
-	err = t.repo.SaveMessages(reqTranslationID, messages)
+	err = t.repo.SaveMessages(messages)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "saving messages: %s", err)
 	}
@@ -112,15 +116,24 @@ func (t *TranslateServiceServer) DownloadTranslationFile(
 	case pb.Type_GO:
 		to = convert.ToGo
 	}
-	// find file from DB/FS with language
-	_ = language
 
-	messages, err := t.repo.LoadMessages(reqTranslationID)
-	if err != nil {
+	messageList, err := t.repo.LoadMessages(reqTranslationID)
+
+	switch {
+	case errors.Is(err, repo.ErrNotFound):
+		return nil, status.Errorf(codes.NotFound, "no translations with id '%s'", reqTranslationID)
+	case err != nil:
 		return nil, status.Errorf(codes.Internal, "loading messages: %s", err)
 	}
 
-	data, err := to(messages)
+	i := slices.IndexFunc(messageList, func(v model.Messages) bool {
+		return v.Language.String() == language.String()
+	})
+	if i < 0 {
+		i = 0
+	}
+
+	data, err := to(messageList[i])
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "serialize data: %s", err)
 	}

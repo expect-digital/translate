@@ -29,9 +29,10 @@ func MessagesFromProto(m *pb.Messages) (model.Messages, error) {
 	}
 
 	messageModel := model.Messages{
-		Labels:   m.Labels,
-		Language: tag,
-		Messages: messagesToAdd,
+		TranslationID: m.TranslationId,
+		Labels:        m.Labels,
+		Language:      tag,
+		Messages:      messagesToAdd,
 	}
 
 	return messageModel, nil
@@ -45,9 +46,10 @@ func MessagesToProtobuf(m model.Messages) *pb.Messages {
 	}
 
 	return &pb.Messages{
-		Labels:   m.Labels,
-		Language: m.Language.String(),
-		Messages: messagesToAdd,
+		TranslationId: m.TranslationID,
+		Labels:        m.Labels,
+		Language:      m.Language.String(),
+		Messages:      messagesToAdd,
 	}
 }
 
