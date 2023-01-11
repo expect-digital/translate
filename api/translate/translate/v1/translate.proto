@@ -45,7 +45,7 @@ message DownloadTranslationFileResponse {
 }
 
 message UpdateMessagesRequest {
-  string messages_id = 1;
+  string translation_id = 1;
   Messages messages = 2;
 }
 
@@ -72,7 +72,7 @@ service TranslateService {
   }
   rpc UpdateMessages(UpdateMessagesRequest) returns (UpdateMessagesResponse) {
     option (google.api.http) = {
-      put: "/v1/messages/{messages_id}"
+      put: "/v1/messages/{translation_id}"
       body: "messages"
     };
   }
