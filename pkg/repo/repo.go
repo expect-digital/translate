@@ -2,11 +2,15 @@ package repo
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/dgraph-io/badger/v3"
 	"github.com/expect-digital/translate/pkg/model"
+	"golang.org/x/exp/slices"
 )
+
+var ErrNotFound = errors.New("not found in Database")
 
 type Repo struct {
 	db *badger.DB
@@ -27,56 +31,66 @@ func Connect() (*badger.DB, error) {
 	return db, nil
 }
 
-func (r *Repo) SaveMessages(id string, m model.Messages) error {
-	messagesJson, err := json.Marshal(m)
+func (r *Repo) SaveMessages(m model.Messages) error {
+	key := []byte(m.TranslationID)
+
+	messagesList, err := r.LoadMessages(m.TranslationID)
+	if err != nil && !errors.Is(err, ErrNotFound) {
+		return fmt.Errorf("loading messages: %w", err)
+	}
+
+	i := slices.IndexFunc(messagesList, func(v model.Messages) bool {
+		return v.Language.String() == m.Language.String()
+	})
+	if i >= 0 {
+		messagesList[i] = m
+	} else {
+		messagesList = append(messagesList, m)
+	}
+
+	messagesJson, err := json.Marshal(messagesList)
 	if err != nil {
 		return fmt.Errorf("marshaling model.Messages to JSON: %w", err)
 	}
 
 	err = r.db.Update(func(txn *badger.Txn) error {
-		return txn.Set([]byte(id), messagesJson) //nolint:wrapcheck
+		return txn.Set(key, messagesJson) //nolint:wrapcheck
 	})
 	if err != nil {
-		return fmt.Errorf("creating read/write transaction: %w", err)
+		return fmt.Errorf("inserting data into DB: %w", err)
 	}
 
 	return nil
 }
 
-func (repo *Repo) LoadMessages(id string) (model.Messages, error) {
-	var msg model.Messages
+func (r *Repo) LoadMessages(translationID string) ([]model.Messages, error) {
+	var messagesList []model.Messages
 
-	err := repo.db.View(func(txn *badger.Txn) error {
-		item, err := txn.Get([]byte(id))
+	key := []byte(translationID)
+
+	err := r.db.View(func(txn *badger.Txn) error {
+		v, err := txn.Get(key)
 		if err != nil {
-			return fmt.Errorf("getting key/value pair: %w", err)
+			return err //nolint:wrapcheck
 		}
 
-		err = item.Value(func(val []byte) error {
-			err = json.Unmarshal(val, &msg)
-
-			if err != nil {
-				return fmt.Errorf("unmarshaling JSON to model.Messages: %w", err)
-			}
-
-			return nil
+		return v.Value(func(val []byte) error { //nolint:wrapcheck
+			return json.Unmarshal(val, &messagesList) //nolint:wrapcheck
 		})
-
-		if err != nil {
-			return fmt.Errorf("retrieving value from badger db %w", err)
-		}
-
-		return nil
 	})
-	if err != nil {
-		return model.Messages{}, fmt.Errorf("creating read transaction: %w", err)
-	}
 
-	return msg, nil
+	switch {
+	default:
+		return messagesList, nil
+	case errors.Is(err, badger.ErrKeyNotFound):
+		return messagesList, ErrNotFound
+	case err != nil:
+		return nil, fmt.Errorf("getting '%s' from DB: %w", translationID, err)
+	}
 }
 
 func (r *Repo) ListMessages() ([]model.Messages, error) {
-	var messages []model.Messages
+	var allMessages []model.Messages
 
 	err := r.db.View(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
@@ -84,16 +98,16 @@ func (r *Repo) ListMessages() ([]model.Messages, error) {
 
 		for it.Rewind(); it.Valid(); it.Next() {
 			item := it.Item()
-			var message model.Messages
+			var messages []model.Messages
 
 			err := item.Value(func(val []byte) error {
-				return json.Unmarshal(val, &message) //nolint:wrapcheck
+				return json.Unmarshal(val, &messages) //nolint:wrapcheck
 			})
 			if err != nil {
 				return fmt.Errorf("unmarshal value to messages: %w", err)
 			}
 
-			messages = append(messages, message)
+			allMessages = append(allMessages, messages...)
 		}
 
 		return nil
@@ -102,5 +116,5 @@ func (r *Repo) ListMessages() ([]model.Messages, error) {
 		return nil, fmt.Errorf("badgerDB read :%w", err)
 	}
 
-	return messages, nil
+	return allMessages, nil
 }
