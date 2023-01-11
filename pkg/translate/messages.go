@@ -45,7 +45,8 @@ func (t *TranslateServiceServer) UpdateMessages(
 	if cnt := slices.ContainsFunc(messagesList, func(m model.Messages) bool {
 		return m.Language.String() == messages.Language.String()
 	}); !cnt {
-		return nil, status.Errorf(codes.NotFound, "no such language exists in Database '%s'", messages.Language.String())
+		return nil, status.Errorf(codes.NotFound, "not found id '%s' with language '%s'",
+			messages.TranslationID, messages.Language.String())
 	}
 
 	err = t.repo.SaveMessages(messages)
