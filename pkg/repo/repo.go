@@ -90,7 +90,7 @@ func (r *Repo) LoadMessages(translationID string) ([]model.Messages, error) {
 }
 
 func (r *Repo) ListMessages() ([]model.Messages, error) {
-	var messages []model.Messages
+	var allMessages []model.Messages
 
 	err := r.db.View(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
@@ -98,16 +98,16 @@ func (r *Repo) ListMessages() ([]model.Messages, error) {
 
 		for it.Rewind(); it.Valid(); it.Next() {
 			item := it.Item()
-			var message model.Messages
+			var messages []model.Messages
 
 			err := item.Value(func(val []byte) error {
-				return json.Unmarshal(val, &message) //nolint:wrapcheck
+				return json.Unmarshal(val, &messages) //nolint:wrapcheck
 			})
 			if err != nil {
 				return fmt.Errorf("unmarshal value to messages: %w", err)
 			}
 
-			messages = append(messages, message)
+			allMessages = append(allMessages, messages...)
 		}
 
 		return nil
@@ -116,5 +116,5 @@ func (r *Repo) ListMessages() ([]model.Messages, error) {
 		return nil, fmt.Errorf("badgerDB read :%w", err)
 	}
 
-	return messages, nil
+	return allMessages, nil
 }
