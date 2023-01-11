@@ -1,7 +1,6 @@
 {
   "locale": "en-US",
   "translations": {
-    "title": "Title with manual ID",
     "introductionHeader": " Hello i18n!\n",
     "5206857922697139278": "I don't output any element",
     "392942015236586892": "Angular logo",
