@@ -1,0 +1,39 @@
+{
+  "home": {
+    "select": "Sprache ändern"
+  },
+  "title": "Service-Feedback für {company}",
+  "name": {
+    "label": "Namen",
+    "placeholder": "Name eingeben"
+  },
+  "gender": {
+    "label": "Geschlecht",
+    "select": "Wähle Geschlecht",
+    "options": {
+      "male": "Männlich",
+      "female": "Weiblich",
+      "other": "Andere"
+    }
+  },
+  "comment": {
+    "label": "Kommentar",
+    "placeholder": "Kommentar eingeben"
+  },
+  "rating": {
+    "label": "Bewerten Sie unseren Kundenservice:",
+    "options": {
+      "excellent": "Ausgezeichnet",
+      "good": "Gute",
+      "bad": "Schlecht"
+    }
+  },
+  "submit": {
+    "label": "Senden"
+  },
+  "pluralization": {
+    "label": "Gegenstände auswählen",
+    "items": "Du hast ausgewählt {count, plural, =0{nichts} one{eins} other{mehrere}} {count, plural, =0{} one{Artikel} other{Produkte}}.",
+    "gender": "{gender, select, male{er ist ein} female{Sie ist ein} other{Sie sind }} {gender}."
+  }
+}
