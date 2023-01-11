@@ -1,0 +1,94 @@
+<!-- This is how you use the directive -->
+<span [translate]="'home.select'"></span>
+<button *ngFor="let language of languageList" (click)="useLanguage(language)">
+  {{ language }}
+</button>
+
+<!-- or even simpler using the content of your element as a key -->
+<div translate [translateParams]="{ company: 'X' }">title</div>
+
+<!-- with pipe -->
+<form class="form">
+  <div class="wrapper">
+    <label [innerHTML]="'name.label' | translate"></label>
+    <input type="text" [placeholder]="'name.placeholder' | translate" />
+  </div>
+  <div class="wrapper">
+    <label for="gender" [innerHTML]="'gender.label' | translate"></label>
+    <select id="gender">
+      <option value="">{{ "gender.select" | translate }}</option>
+      <ng-container *ngFor="let gender of genderList">
+        <option value="{{ 'gender.options.' + gender | translate }}">
+          {{ "gender.options." + gender | translate }}
+        </option>
+      </ng-container>
+    </select>
+  </div>
+  <div class="wrapper">
+    <label for="comment" [innerHTML]="'comment.label' | translate"></label>
+    <textarea
+      id="comment"
+      type="text"
+      [placeholder]="'comment.placeholder' | translate"
+    ></textarea>
+  </div>
+  <div>
+    <label [innerHTML]="'rating.label' | translate"></label>
+    <div>
+      <div>
+        <input id="excellent" type="radio" value="excellent" name="rating" />
+        <label for="excellent"
+          >{{ "rating.options.excellent" | translate }}
+        </label>
+      </div>
+      <div>
+        <input id="good" type="radio" value="good" name="rating" />
+        <label for="good">{{ "rating.options.good" | translate }}</label>
+      </div>
+      <div>
+        <input id="bad" type="radio" value="bad" name="rating" />
+        <label for="bad">{{ "rating.options.bad" | translate }}</label>
+      </div>
+    </div>
+  </div>
+</form>
+
+<br />
+
+<!-- examples for pluralization -->
+
+<h3>Pluralization</h3>
+
+<form [formGroup]="form">
+  <div>{{ "pluralization.label" | translate }}</div>
+  <select formControlName="count">
+    <option value="0">0</option>
+
+    <option value="1">1</option>
+
+    <option value="2">2</option>
+  </select>
+
+  <div>
+    <strong translate [translateParams]="{ count: form.controls.count.value }"
+      >pluralization.items</strong
+    >
+  </div>
+
+  <br />
+
+  <div>{{ "gender.select" | translate }}</div>
+  <select formControlName="gender">
+    <option value="">{{ "gender.select" | translate }}</option>
+    <ng-container *ngFor="let gender of genderList">
+      <option [value]="gender">
+        {{ "gender.options." + gender | translate }}
+      </option>
+    </ng-container>
+  </select>
+  <div *ngIf="form.controls.gender.value !== ''">
+    <strong>{{
+      "pluralization.gender" | translate : { gender: gender }
+    }}</strong>
+  </div>
+</form>

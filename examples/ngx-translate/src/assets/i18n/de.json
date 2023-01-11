@@ -1,5 +1,8 @@
 {
-  "title": "Service-Feedback für {{company}}",
+  "home": {
+    "select": "Sprache ändern"
+  },
+  "title": "Service-Feedback für {company}",
   "name": {
     "label": "Namen",
     "placeholder": "Name eingeben"
@@ -28,7 +31,9 @@
   "submit": {
     "label": "Senden"
   },
-  "requiredErrorMessage": "Dies ist ein Pflichtfeld.",
-  "successfulSubmitMessage": "Vielen Dank für Ihr wertvolles Feedback!!!\nDas Feedback wurde erfolgreich übermittelt.",
-  "copyright": "Alle Rechte vorbehalten. {{currentYear}} {{company}}"
+  "pluralization": {
+    "label": "Gegenstände auswählen",
+    "items": "Du hast ausgewählt {count, plural, =0{nichts} one{eins} other{mehrere}} {count, plural, =0{} one{Artikel} other{Produkte}}.",
+    "gender": "{gender, select, male{er ist ein} female{Sie ist ein} other{Sie sind }} {gender}."
+  }
 }
