@@ -44,6 +44,13 @@ message DownloadTranslationFileResponse {
   bytes data = 1;
 }
 
+message UpdateMessagesRequest {
+  string translation_id = 1;
+  Messages messages = 2;
+}
+
+message UpdateMessagesResponse {}
+
 message ListMessagesRequest {}
 
 message ListMessagesResponse {
@@ -62,5 +69,11 @@ service TranslateService {
   }
   rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse) {
     option (google.api.http) = {get: "/v1/messages"};
+  }
+  rpc UpdateMessages(UpdateMessagesRequest) returns (UpdateMessagesResponse) {
+    option (google.api.http) = {
+      put: "/v1/messages/{translation_id}"
+      body: "messages"
+    };
   }
 }
