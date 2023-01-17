@@ -1,0 +1,44 @@
+.container {
+  margin: 30px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  text-align: end;
+}
+
+.header--text {
+  padding-right: 10px;
+  font-weight: bold;
+}
+
+.heading {
+  text-align: center;
+}
+
+.form {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form--label {
+  padding-bottom: 5px;
+}
+
+.input {
+  height: 30px;
+}
+
+.radio {
+  padding-left: 10px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}

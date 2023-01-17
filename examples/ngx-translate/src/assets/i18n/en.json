@@ -1,0 +1,41 @@
+{
+  "home": {
+    "select": "Change language"
+  },
+  "title": "Service feedback for {company}",
+  "name": {
+    "label": "<strong>Name</strong",
+    "placeholder": "Enter Name"
+  },
+  "gender": {
+    "label": "<strong>Gender</strong",
+    "select": "Select gender",
+    "options": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    }
+  },
+  "comment": {
+    "label": "<strong>Comment</strong",
+    "placeholder": "Enter Comment"
+  },
+  "rating": {
+    "label": "<strong>Rate our customer service: </strong",
+    "options": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "bad": "Bad"
+    }
+  },
+  "submit": {
+    "label": "Submit"
+  },
+  "requiredErrorMessage": "This is a required field.",
+  "successfulSubmitMessage": "Thanks for your valuable feedback!!!\nThe feedback has been submitted successfully.",
+  "pluralization": {
+    "label": "Select items",
+    "items": "You have selected {count, plural, =0{nothing} one{one} other{multiple}} {count, plural, =0{} one{item} other{items}}.",
+    "gender": "{gender, select, male{He is a} female{She is a} other{They are}} {gender}."
+  }
+}
